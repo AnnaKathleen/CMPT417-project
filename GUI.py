@@ -1,5 +1,11 @@
-import tkinter as tk
+from tkinter import *
 
-mainWindow = tk.Tk() # mainWindow is the name of the main window object
+def startGUI(canvasTitle, canvasWidth, canvasHeight):
+    master = Tk()
+    master.title(canvasTitle)
+    window = Canvas(master, width = canvasWidth, height = canvasHeight)
+    window.pack()
 
-mainWindow.mainloop() 
+if __name__ == '__main__':
+    startGUI('Window Title',640, 480)
+    mainloop()
