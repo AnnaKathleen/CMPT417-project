@@ -1,19 +1,27 @@
 import numpy as np
-# import BFS
-# import DFS
+import timeit
+import argparse
+from BFS import BFS
+from BFS import BFS
 
+# map sizes:
+board_map = {
+    '8Puzzle' : np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
+    '15Puzzle' : np.array([[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]])
+}
 
-eightPuzzle = np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
-fifteenPuzzle = np.array([[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]])
-
-goalState = eightPuzzle
+# functions:
+function_map = {
+    'bfs': BFS,
+    'dfs': DFS
+}
 
 # Randomize the puzzle to get the starting state of the problem
 def getStartState():
     startState = goalState.ravel()
     np.random.shuffle(startState)
-    n = np.shape(startState)
-    return startState.reshape(n,n)
+    n = np.shape(goalState)
+    return startState.reshape(n[0],n[0])
 
 # get the user to choose the algorithm to solve the puzzle
 def chooseAlgorithm():
@@ -33,6 +41,30 @@ def solve(solver, startState, goalState):
     return output
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('algorithm')
+    parser.add_argument('board')
+    args = parser.parse_args()
+
+    function = function_map[args.algorithm]
+    board = board_map[args.board]
+    
+    goalState = board
+
     startState = getStartState()
-    solver = chooseAlgorithm()
-    # solve(solver, startState, goalState)
+    print("Start State: \n", startState)
+    print("Goal State: \n", goalState, "\n")
+
+    startTime = timeit.default_timer()
+
+    solution = function(startState, goalState)
+
+    stopTime = timeit.default_timer()
+
+    print(startTime)
+    print(stopTime)
+    print(stopTime - startState)
+
+    # solver = chooseAlgorithm() # not needed anymore.    
+    # solve(solver, startState, goalState) # not needed anymore
