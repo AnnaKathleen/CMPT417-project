@@ -1,9 +1,18 @@
 from node import Node
+from collections import deque
 
-def BFS(startState, goalNode):
+def getSuccessors(node):
+
+
+
+def BFS(startState, goalState):
     print("searching for solution with BFS\n")
-    actions = ["up","down","left","right"]
-    visited = []
-    
+    visited, frontier = set(), deque([Node(startState, None, None, 0,0,0)])
 
-    pass
+    while frontier:
+        currNode = frontier.popleft()
+        visited.add(currNode.map)
+
+        if currNode.node = goalState:
+            goal = currNode
+            return frontier

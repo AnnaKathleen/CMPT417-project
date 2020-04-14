@@ -2,7 +2,7 @@ import numpy as np
 import timeit
 import argparse
 from BFS import BFS
-from BFS import BFS
+from DFS import DFS
 
 # map sizes:
 board_map = {
