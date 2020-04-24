@@ -58,13 +58,9 @@ if __name__ == "__main__":
 
     startTime = timeit.default_timer()
 
-    solution = function(startState, goalState)
+    function(startState, goalState)
 
     stopTime = timeit.default_timer()
-
-    print(startTime)
-    print(stopTime)
-    print(stopTime - startState)
 
     # solver = chooseAlgorithm() # not needed anymore.    
     # solve(solver, startState, goalState) # not needed anymore
