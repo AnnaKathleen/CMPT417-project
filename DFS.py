@@ -1,6 +1,10 @@
 from queue import LifoQueue
+import queue
 import numpy as np
 import timeit
+import random
+import io
+
 
 num_nodes_expanded = 0
 max_search_depth = 0
@@ -100,19 +104,19 @@ def stepBack(startNode,node):
     directions = list()
     while  currNode.stateMat != startNode:
         if currNode.action == 1:
-            currAction = 'move 0 Up'
+            currAction = 'Up'
         elif currNode.action == 2:
-            currAction = 'move 0 Down'
+            currAction = 'Down'
         elif currNode.action == 3:
-            currAction = 'move 0 Left'
+            currAction = 'Left'
         else:
-            currAction = 'move 0 Right'
+            currAction = 'Right'
         
         directions.append(currAction)
         currNode = currNode.parent
     return directions
 
-def DFS(initialState, goalTest):
+def DFS(initialState, goalTest, thisTime, iter):
 	
 	global goal_node, max_search_depth
 	
@@ -127,15 +131,16 @@ def DFS(initialState, goalTest):
 	while not openList.empty():
 		
 		currTime = timeit.default_timer()
-		if (currTime-start_time) >= time_constraint:
-			time_acceptable = False
-			break	
+		if (currTime-thisTime) >= time_constraint:
+			#time_acceptable = False
+			#break
+			return 0	
 		
 		nodeNode = openList.get()
 		closedList.add(nodeNode)
 
 		if nodeNode.stateMat == goalTest:
-			goal_node = nodeNode
+			goal_node.put(nodeNode)
 			return openList
 
 		possibleStates = reversed(getSuccessors(nodeNode))
@@ -149,44 +154,57 @@ def DFS(initialState, goalTest):
 				max_search_depth += 1
 
 
-def export(frontier, elapsedTime):
+def export(initialstate, goalnode, elapsedTime, namefile):
 
-    tileMoves = stepBack(startState,goal_node)
-
-    file = open('output.txt', 'w')
+    global tileMoves
+    egoalnode = goalnode.get()
+    eopenlist = initialstate
+    i = namefile
+    tileMoves = stepBack(eopenlist,egoalnode)
+    file = open("eightpdfs_{0}.txt".format(i), 'w')
+    #file = open("namefile.txt", 'w')
     file.write("path_to_goal: " + str(tileMoves))
-    file.write("\ncost_of_path: " + str(len(tileMoves)))
-    file.write("\nnum_nodes_expanded: " + str(num_nodes_expanded))
-    file.write("\nsearch_depth: " + str(goal_node.depth))
-    file.write("\nrunning_time: " + format(elapsedTime, '.8f'))    
+    #file.write("\ncost_of_path: " + str(len(tileMoves)))
+    #file.write("\nnum_nodes_expanded: " + str(num_nodes_expanded))
+    file.write("\n" + str(num_nodes_expanded))
+    file.write("\n" + str(egoalnode.depth))
+    file.write("\n" + format(elapsedTime, '.8f'))
+    #file.write("\nsearch_depth: " + str(goal_node.depth))
+    #file.write("\nrunning_time: " + format(elapsedTime, '.8f'))    
     file.close()
 
 def main():
-    global puzzleSize, puzzle_side_len
-    global startState
-    global start_time
-    global time_acceptable 
-  
-    startState = [3,1,2,4,5,0,6,7,8]
-    goalState = [0,1,2,3,4,5,6,7,8]
-    puzzleSize = len(startState)
-    puzzle_side_len = int(puzzleSize ** 0.5)
-    print("running dfs on puzzle :\n", matStacker(startState))
-    print("goal puzzle state is :\n", matStacker(goalState))
-    start = timeit.default_timer()
-    start_time = start
- 
-    results = DFS(startState, goalState)
-    stop = timeit.default_timer()
+	global puzzleSize, puzzle_side_len
+	global startState, goalState, goal_node
+	global start_time
+	global time_acceptable 
+	start = []
+	stop = []
+	results = []
 
-    print("********    Result of DFS    ********* ")
-    print("time elapsed was: \n", stop-start)
-    if results:
-    	export(results, stop-start)
-    	unstacked = goal_node.stateMat
-    	stacked = matStacker(unstacked)
-    	print("goal state found : \n", stacked)
-    else:
-    	print("no solution found :( ")	
+	startState = [3,1,2,4,5,0,6,7,8]
+	goalState = [0,1,2,3,4,5,6,7,8]
+	randStart = []
+	goal_node = queue.Queue()
+
+	puzzleSize = len(startState)
+	puzzle_side_len = int(puzzleSize ** 0.5)
+	for each in range(0,4):
+		randStart.append(random.sample(startState,puzzleSize))
+		print("running dfs on puzzle :\n", matStacker(randStart[each]))
+		print("goal puzzle state is :\n", matStacker(goalState))
+		start.append(timeit.default_timer())
+		#results = DFS(startState, goalState, start[each], each)
+		results = DFS(randStart[each], goalState, start[each], each)
+		stop.append(timeit.default_timer())
+
+		print("********    Result of DFS    ********* ")
+		#print("time elapsed was: \n", stop-start)
+		if results:
+			export(randStart[each], goal_node, stop[each]-start[each], each)
+			#export(startState,goal_node,stop[each]-start[each],each)
+			print("solution found ! \n")
+		else:
+			print("no solution found :( ")	
 
 main()
