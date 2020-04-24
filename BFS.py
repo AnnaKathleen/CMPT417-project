@@ -1,5 +1,5 @@
 from collections import deque
-from node import Node
+from Node import Node
 
 num_nodes_expanded = 0
 puzzleSize = 0
@@ -9,6 +9,10 @@ puzzle_side_len = 0
 def bfs(startState, goalState):
     unvisitedNodes = deque([Node(startState, None, None, 0)])
     exploredNodes = set()
+
+    print(startState)
+    print(len(unvisitedNodes))
+    print(unvisitedNodes)
 
     while unvisitedNodes:
         currNode = unvisitedNodes.popleft()
@@ -30,33 +34,46 @@ def getSuccessors(currNode):
     global num_nodes_expanded
     num_nodes_expanded += 1
     children = list()
-
+    newPosition = currNode.node[:]
+    index = newPosition.index(0)
+    print(type(newPosition))
+    print("new state: ", newPosition)
     for i in range(1,5):
-        newPosition = currNode.node[:]
-        index = newPosition.index(0)
         if i == 1: # move the 0 up
             if index not in range(0, puzzle_side_len):
                 tempState = newPosition[index - puzzle_side_len]
                 newPosition[index - puzzle_side_len] = newPosition[index]
                 newPosition[index] = tempState
+            else:
+                newPosition = None
 
         elif i == 2: # move the 0 down
-            if index not in range(0, puzzle_side_len):
-                tempState = newPosition[index - puzzle_side_len]
-                newPosition[index - puzzle_side_len] = newPosition[index]
+            if index not in range(puzzleSize - puzzle_side_len, puzzleSize):
+                print(type(index))
+                print(index)
+                print(type(puzzle_side_len))
+                print(puzzle_side_len)
+                tempState = newPosition[index + puzzle_side_len]
+                newPosition[index + puzzle_side_len] = newPosition[index]
                 newPosition[index] = tempState
+            else:
+                newPosition = None
         
         elif i == 3: # move the 0 left
-            if index not in range(0, puzzle_side_len):
-                tempState = newPosition[index - puzzle_side_len]
-                newPosition[index - puzzle_side_len] = newPosition[index]
+            if index not in range(0, puzzleSize ,puzzle_side_len):
+                tempState = newPosition[index - 1]
+                newPosition[index - 1] = newPosition[index]
                 newPosition[index] = tempState
+            else:
+                newPosition = None
 
         elif i == 4: # move the 0 right
-            if index not in range(0, puzzle_side_len):
-                tempState = newPosition[index - puzzle_side_len]
-                newPosition[index - puzzle_side_len] = newPosition[index]
+            if index not in range(puzzle_side_len - 1, puzzleSize, puzzleSize):
+                tempState = newPosition[index + 1]
+                newPosition[index + 1] = newPosition[index]
                 newPosition[index] = tempState
+            else:
+                newPosition = None
         
         children.append(Node(newPosition,currNode,i,0))
     
@@ -87,7 +104,6 @@ def main():
     goalState = [0,1,2,3,4,5,6,7,8]
     puzzleSize = len(startState)
     puzzle_side_len = int(puzzleSize ** 0.5)
-    print("he")
     bfs(startState, goalState)
 
 main()
