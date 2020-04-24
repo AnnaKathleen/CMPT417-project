@@ -50,9 +50,9 @@ def getSuccessors(currNode):
                 noneTrue = True
                 finalPosition = None
         if noneTrue == True:
-            children.append(Node(finalPosition,currNode,i,0,currNode.cost + 1))
+            children.append(Node(finalPosition,currNode,i,0,currNode.cost + 1,0))
         else:
-            children.append(Node(newPosition,currNode,i,0, currNode.cost + 1))
+            children.append(Node(newPosition,currNode,i,0, currNode.cost + 1,0))
     
     successors = [children for children in children if children.node]
     return successors
@@ -90,17 +90,33 @@ def ast(startState, goalState):
 
     key = heuristic(startState, goalState)
     root = Node(startState, None, None, 0, 0, key)
-
     dictEntry = (key, 0, root) # holds the key, action and current node as a tuple
     heappush(priorityQueue, dictEntry) # add the dictionary entry to the heap called priorityQueue
     heapDict[root.map] = dictEntry
 
     while priorityQueue:
         currNode = heappop(priorityQueue)
-        print(currNode)
-        visitedNodes.add(currNode[2].map)
+        visitedNodes.add(currNode[2].map) # get the map of the node from the node which is in index pos 2 of the dictEntry tuple
+        
+        if currNode[2].node == goalState: # check if we have reached the goal node 
+            directions = stepBack(startState,currNode[2]) # trace back steps to get directions on how to get from start state to the goal state
+            print("path_to_goal: " + str(directions))
+            print("cost_of_path: " + str(len(directions)))
+            return None
+        
+        successors = getSuccessors(currNode[2])
 
+        for nextNode in successors:
+            nextNode.key = nextNode.cost + heuristic(nextNode.node, goalState)
+            dictEntry = (nextNode.key, nextNode.action, nextNode)
 
+            if nextNode.map not in visitedNodes:
+                heappush(priorityQueue, dictEntry)
+                visitedNodes.add(nextNode.map)
+                heapDict[nextNode.map] = dictEntry
+            
+
+        
 
 
 def main():
