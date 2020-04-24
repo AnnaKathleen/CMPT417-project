@@ -7,7 +7,7 @@ puzzle_side_len = 0
 
 
 def BFS(startState, goalState):
-    unvisitedNodes = deque([Node(startState, None, None, 0)])
+    unvisitedNodes = deque([Node(startState, None, None, 0,0,0)])
     exploredNodes = set()
 
     while unvisitedNodes:
@@ -70,9 +70,9 @@ def getSuccessors(currNode):
                 noneTrue = True
                 finalPosition = None
         if noneTrue == True:
-            children.append(Node(finalPosition,currNode,i,0))
+            children.append(Node(finalPosition,currNode,i,0,0,0))
         else:
-            children.append(Node(newPosition,currNode,i,0))
+            children.append(Node(newPosition,currNode,i,0,0,0))
             # print(children)
     
     successors = [children for children in children if children.node]

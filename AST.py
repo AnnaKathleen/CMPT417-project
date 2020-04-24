@@ -49,13 +49,11 @@ def getSuccessors(currNode):
                 noneTrue = True
                 finalPosition = None
         if noneTrue == True:
-            children.append(Node(finalPosition,currNode,i,0))
+            children.append(Node(finalPosition,currNode,i,0,currNode.cost + 1))
         else:
-            children.append(Node(newPosition,currNode,i,0))
-            # print(children)
+            children.append(Node(newPosition,currNode,i,0, currNode.cost + 1))
     
     successors = [children for children in children if children.node]
-    # print(successors)
     return successors
 
 
@@ -77,8 +75,27 @@ def stepBack(startNode,node):
     return directions
 
 def heuristic(currState, goalState):
-    return sum(abs(b % puzzle_side_len - g % puzzle_side_len) + abs(b//puzzle_side_len - g//puzzle_side_len)
-               for b, g in ((currState.index(i), goalState.index(i)) for i in range(1, puzzleSize)))
+    # key corresponds to index of the elements in 1D currState array 
+    # value corresponds to position in an x,y grid
+    #   0 1 2 
+    # 0|-|-|-|
+    # 1|-|-|-|
+    # 2|-|-|-|
+    posDict = {
+        0: (0,0),
+        1: (1,0),
+        2: (2,0),
+        3: (1,0),
+        4: (1,1),
+        5: (1,2),
+        6: (2,0),
+        7: (2,1),
+        8: (2,2)
+    }
+    # heuristic is calculated by: in a plane with p1 at (x1, y1) and p2 at (x2, y2), it is |x1 - x2| + |y1 - y2|.
+    x1 = posDict[currState.node]
+    sum = abs(x1 - x2) + abs(y1 - y2)
+    return sum
 
 def ast(startState, goalState):
     pass
