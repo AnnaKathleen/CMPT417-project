@@ -77,26 +77,32 @@ def stepBack(startNode,node):
 
 def heuristic(currState, goalState):
     # heuristic is calculated by: in a plane with p1 at (x1, y1) and p2 at (x2, y2), it is |x1 - x2| + |y1 - y2|.
+    # 
     sum = 0
     for i in range(1, puzzleSize):
+        print("currentState: ", currState.index(i))
+        print("goalState: ", goalState.index(i), "\n")
         sum += abs(currState.index(i) % puzzle_side_len - goalState.index(i) % puzzle_side_len) + abs(currState.index(i)//puzzle_side_len - goalState.index(i)//puzzle_side_len)
-    # print(sum)
+        print(sum)
     return sum
 
 def ast(startState, goalState):
     visitedNodes = set()
     priorityQueue = list() # heap implemented as a priority Queue
-    heapDict = {}
+    heapify(priorityQueue)
+    heapDict = {} # dictionary of all the heaps
 
-    key = heuristic(startState, goalState)
-    root = Node(startState, None, None, 0, 0, key)
-    dictEntry = (key, 0, root) # holds the key, action and current node as a tuple
+    heuristicValue = heuristic(startState, goalState)
+    input()
+    rootNode = Node(startState, None, None, 0, 0, heuristicValue)
+
+    dictEntry = (heuristicValue, 0, rootNode) # holds the heuristicValue, action and current node as a tuple
     heappush(priorityQueue, dictEntry) # add the dictionary entry to the heap called priorityQueue
-    heapDict[root.map] = dictEntry
+    heapDict[rootNode.ID] = dictEntry
 
     while priorityQueue:
         currNode = heappop(priorityQueue)
-        visitedNodes.add(currNode[2].map) # get the map of the node from the node which is in index pos 2 of the dictEntry tuple
+        visitedNodes.add(currNode[2].ID) # get the ID of the node from the node which is in index pos 2 of the dictEntry tuple
         
         if currNode[2].node == goalState: # check if we have reached the goal node 
             directions = stepBack(startState,currNode[2]) # trace back steps to get directions on how to get from start state to the goal state
@@ -107,17 +113,23 @@ def ast(startState, goalState):
         successors = getSuccessors(currNode[2])
 
         for nextNode in successors:
-            nextNode.key = nextNode.cost + heuristic(nextNode.node, goalState)
-            dictEntry = (nextNode.key, nextNode.action, nextNode)
+            nextNode.heuristicValue = nextNode.cost + heuristic(nextNode.node, goalState)
+            dictEntry = (nextNode.heuristicValue, nextNode.action, nextNode)
 
-            if nextNode.map not in visitedNodes:
+            if nextNode.ID not in visitedNodes:
                 heappush(priorityQueue, dictEntry)
-                visitedNodes.add(nextNode.map)
-                heapDict[nextNode.map] = dictEntry
-            
+                visitedNodes.add(nextNode.ID)
+                heapDict[nextNode.ID] = dictEntry
 
-        
-
+            # updating the heap if the node is in the dictionary and its new 
+            elif nextNode.ID in heapDict:
+                if nextNode.heuristicValue < heapDict[nextNode.ID][2].heuristicValue:
+                    tup = (heapDict[nextNode.ID][2].heuristicValue, heapDict[nextNode.ID][2].action, heapDict[nextNode.ID][2])
+                    heuristicIndex = priorityQueue.index(tup)
+                    priorityQueue[int(heuristicIndex)] = dictEntry
+                    heapDict[nextNode.ID] = dictEntry
+                    heapify(priorityQueue)
+  
 
 def main():
     global puzzleSize, puzzle_side_len

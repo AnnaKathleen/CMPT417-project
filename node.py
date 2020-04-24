@@ -1,11 +1,11 @@
 class Node:
-    def __init__(self, node, parent, action, movingPiece, cost, key):
+    def __init__(self, node, parent, action, movingPiece, cost, heuristicValue):
         self.node = node
         self.parent = parent
         self.action = action
         self.movingPiece = movingPiece
         self.cost = cost
-        self.key = key
+        self.heuristicValue = heuristicValue
 
         # create a unique Identifier for each node created
         if self.node:
