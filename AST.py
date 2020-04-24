@@ -77,13 +77,30 @@ def stepBack(startNode,node):
 
 def heuristic(currState, goalState):
     # heuristic is calculated by: in a plane with p1 at (x1, y1) and p2 at (x2, y2), it is |x1 - x2| + |y1 - y2|.
-    # 
+    # x represents the columns and Y represents the rows
+    # origin is (0,0) top left corner of grid shown below
+    #    0 1 2 
+    # 0 |0|1|2|
+    # 1 |3|4|5|
+    # 2 |6|7|8|
+
+    # keys are the indices of thew array and the tuples represent the position in the grid above
+    grid = {
+        0: (0,0),
+        1: (1,0),
+        2: (2,0),
+        3: (0,1),
+        4: (1,1),
+        5: (2,1),
+        6: (0,2),
+        7: (1,2),
+        8: (2,2)
+    }
     sum = 0
     for i in range(1, puzzleSize):
-        print("currentState: ", currState.index(i))
-        print("goalState: ", goalState.index(i), "\n")
-        sum += abs(currState.index(i) % puzzle_side_len - goalState.index(i) % puzzle_side_len) + abs(currState.index(i)//puzzle_side_len - goalState.index(i)//puzzle_side_len)
-        print(sum)
+        currPos = grid[i]
+        goalPos = grid[currState[i]]
+        sum += abs(currPos[0] - goalPos[0]) + abs(currPos[1] - goalPos[1])
     return sum
 
 def ast(startState, goalState):
