@@ -93,12 +93,23 @@ def heuristic(currState, goalState):
         8: (2,2)
     }
     # heuristic is calculated by: in a plane with p1 at (x1, y1) and p2 at (x2, y2), it is |x1 - x2| + |y1 - y2|.
-    x1 = posDict[currState.node]
+    xy1 = posDict[currState[2]]
+    print(xy1)
+    x1 = xy1[0]
+    y1 = xy1[1]
+    xy2 = posDict[currState[4]]
+    x2 = xy2[0]
+    y2 = xy2[1]
+    print(xy2)
     sum = abs(x1 - x2) + abs(y1 - y2)
+    print(sum)
     return sum
 
 def ast(startState, goalState):
-    pass
+    # root = Node(startState, None, None, 0, 0, key)
+    print(startState)
+    heuristic(startState, goalState)
+
 
 
 def main():
