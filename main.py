@@ -62,6 +62,7 @@ if __name__ == "__main__":
     function(startState, goalState)
 
     stopTime = timeit.default_timer()
+    print("time to solve: ", stopTime - startTime)
 
     # solver = chooseAlgorithm() # not needed anymore.    
     # solve(solver, startState, goalState) # not needed anymore

@@ -1,5 +1,6 @@
 from collections import deque
-from node import Node
+from math import floor
+from node import Node, reshapePuzzle
 from heapq import heappush, heappop, heapify
 
 num_nodes_expanded = 0
@@ -83,31 +84,9 @@ def heuristic(currState, goalState):
     # 0 |0|1|2|
     # 1 |3|4|5|
     # 2 |6|7|8|
-
-    # keys are the indices of thew array and the tuples represent the position in the grid above
-    grid = {
-        0: (0,0),
-        1: (1,0),
-        2: (2,0),
-        3: (0,1),
-        4: (1,1),
-        5: (2,1),
-        6: (0,2),
-        7: (1,2),
-        8: (2,2)
-    }
     sum = 0
     for i in range(1, puzzleSize):
-        currPos = grid[i]
-        goalPos = grid[currState[i]]
-        sum += abs(currPos[0] - goalPos[0]) + abs(currPos[1] - goalPos[1])
-    #     print(sum)
-    # sum = 0
-    # for i in range(1, puzzleSize):
-    #     print("currentState: ", currState.index(i))
-    #     print("goalState: ", goalState.index(i), "\n")
-    #     sum += abs(currState.index(i) % puzzle_side_len - goalState.index(i) % puzzle_side_len) + abs(currState.index(i)//puzzle_side_len - goalState.index(i)//puzzle_side_len)
-    #     # print(sum)
+        sum += abs(currState.index(i) % puzzle_side_len - goalState.index(i) % puzzle_side_len) + abs(floor(currState.index(i)/puzzle_side_len) - floor(goalState.index(i)/puzzle_side_len))
     return sum
 
 def ast(startState, goalState):
@@ -117,7 +96,6 @@ def ast(startState, goalState):
     heapDict = {} # dictionary of all the heaps
 
     heuristicValue = heuristic(startState, goalState)
-    # input()
     rootNode = Node(startState, None, None, 0, 0, heuristicValue)
 
     dictEntry = (heuristicValue, 0, rootNode) # holds the heuristicValue, action and current node as a tuple
