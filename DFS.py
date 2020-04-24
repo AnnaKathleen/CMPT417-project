@@ -5,8 +5,8 @@ import timeit
 import random
 import io
 
-
-num_nodes_expanded = 0
+global num_nodes_expanded
+#num_nodes_expanded = 0
 max_search_depth = 0
 puzzleSize = 0
 puzzle_side_len = 0
@@ -44,8 +44,8 @@ def findBlank(mat):
 				return i,j
 
 def getSuccessors(currNode):
-    global num_nodes_expanded
-    num_nodes_expanded += 1
+    #global num_nodes_expanded
+    #num_nodes_expanded += 1
     children = list()
     for i in range(1,5):
         newPosition = currNode.stateMat[:]
@@ -118,8 +118,8 @@ def stepBack(startNode,node):
 
 def DFS(initialState, goalTest, thisTime, iter):
 	
-	global goal_node, max_search_depth
-	
+	global goal_node, max_search_depth, num_nodes_expanded
+	num_nodes_expanded = 0
 	openList = LifoQueue()
 	closedList = set()
 	#might not need this
@@ -138,6 +138,7 @@ def DFS(initialState, goalTest, thisTime, iter):
 		
 		nodeNode = openList.get()
 		closedList.add(nodeNode)
+		
 
 		if nodeNode.stateMat == goalTest:
 			goal_node.put(nodeNode)
@@ -149,6 +150,7 @@ def DFS(initialState, goalTest, thisTime, iter):
 			if state.ID not in closedList:
 				openList.put(state)
 				closedList.add(state.ID)
+				num_nodes_expanded += 1
 
 			if state.depth > max_search_depth:
 				max_search_depth += 1
@@ -175,14 +177,14 @@ def export(initialstate, goalnode, elapsedTime, namefile):
 
 def main():
 	global puzzleSize, puzzle_side_len
-	global startState, goalState, goal_node
+	global startState, goalState, goal_node, num_nodes_expanded
 	global start_time
 	global time_acceptable 
 	start = []
 	stop = []
 	results = []
 
-	startState = [3,1,2,4,5,0,6,7,8]
+	startState = [3,1,2,0,4,5,6,7,8]
 	goalState = [0,1,2,3,4,5,6,7,8]
 	randStart = []
 	goal_node = queue.Queue()
@@ -199,6 +201,7 @@ def main():
 		stop.append(timeit.default_timer())
 
 		print("********    Result of DFS    ********* ")
+		print("nodes expanded were: \n", num_nodes_expanded)
 		#print("time elapsed was: \n", stop-start)
 		if results:
 			export(randStart[each], goal_node, stop[each]-start[each], each)
