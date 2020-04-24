@@ -103,6 +103,6 @@ def main():
     goalState = [0,1,2,3,4,5,6,7,8]
     puzzleSize = len(startState)
     puzzle_side_len = int(puzzleSize ** 0.5)
-    bfs(startState, goalState)
+    BFS(startState, goalState)
 
 main()
