@@ -101,6 +101,13 @@ def heuristic(currState, goalState):
         currPos = grid[i]
         goalPos = grid[currState[i]]
         sum += abs(currPos[0] - goalPos[0]) + abs(currPos[1] - goalPos[1])
+    #     print(sum)
+    # sum = 0
+    # for i in range(1, puzzleSize):
+    #     print("currentState: ", currState.index(i))
+    #     print("goalState: ", goalState.index(i), "\n")
+    #     sum += abs(currState.index(i) % puzzle_side_len - goalState.index(i) % puzzle_side_len) + abs(currState.index(i)//puzzle_side_len - goalState.index(i)//puzzle_side_len)
+    #     # print(sum)
     return sum
 
 def ast(startState, goalState):
@@ -110,7 +117,7 @@ def ast(startState, goalState):
     heapDict = {} # dictionary of all the heaps
 
     heuristicValue = heuristic(startState, goalState)
-    input()
+    # input()
     rootNode = Node(startState, None, None, 0, 0, heuristicValue)
 
     dictEntry = (heuristicValue, 0, rootNode) # holds the heuristicValue, action and current node as a tuple
