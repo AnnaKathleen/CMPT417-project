@@ -3,8 +3,11 @@ import numpy as np
 import timeit
 
 num_nodes_expanded = 0
+max_search_depth = 0
 puzzleSize = 0
 puzzle_side_len = 0
+time_constraint = 10
+
 
 class Node:
 	def __init__(self,stateMat,parent,action,x_loc,y_loc,cost,depth):
@@ -19,13 +22,14 @@ class Node:
 		if self.stateMat:
 			self.map = ''.join(str(locs) for locs in self.stateMat)
 
+goal_node = Node 
 
 def matStacker(mat):
 	a = np.array(mat[0:3])
 	b = np.array(mat[3:6])
 	c = np.array(mat[6:10])
 	d = np.stack((a,b,c))
-	print("stacked array is: \n", d)
+	#print("stacked array is: \n", d)
 	return d
 
 def findBlank(mat):
@@ -41,11 +45,12 @@ def getSuccessors(currNode):
     children = list()
     for i in range(1,5):
         newPosition = currNode.stateMat[:]
+        #nindex = findBlank(newPosition)
+        #print("newPosition is ", newPosition)
         index = newPosition.index(0)
         noneTrue = False
         if i == 1: # move the 0 up
             if index not in range(0, puzzle_side_len):
-            	#print("moving 0 up is out of range")
             	tempState = newPosition[index - puzzle_side_len]
             	newPosition[index - puzzle_side_len] = newPosition[index]
             	newPosition[index] = tempState
@@ -79,11 +84,10 @@ def getSuccessors(currNode):
             else:
                 noneTrue = True
                 finalPosition = None
-        #might be mistake here
-        if noneTrue == True:
-            children.append(Node(finalPosition,currNode,i,0,0,0,0))
+        if noneTrue == True: # I might have made mistake here creating new nodes, depth calc off
+            children.append(Node(finalPosition,currNode,i,0,0,currNode.cost,currNode.depth))
         else:
-            children.append(Node(newPosition,currNode,i,0,0,0,0))
+            children.append(Node(newPosition,currNode,i,0,0,currNode.cost+1,currNode.depth+1))
             # print(children)
     
     successors = [children for children in children if children.stateMat]
@@ -110,20 +114,23 @@ def stepBack(startNode,node):
 
 def DFS(initialState, goalTest):
 	
-	global goal_node
-	# max_search_depth, max_stack_size
+	global goal_node, max_search_depth
+	
 	openList = LifoQueue()
 	closedList = set()
-	#this should be outside, before?
+	#might not need this
 	x_origin,y_origin = findBlank(initialState)
 	currNode = Node(initialState,None,x_origin,y_origin,0,0,0)
 	
 	openList.put(currNode)
 
-	# if time_elapsed < time_constraint:
-	# 	continue
-
 	while not openList.empty():
+		
+		currTime = timeit.default_timer()
+		if (currTime-start_time) >= time_constraint:
+			time_acceptable = False
+			break	
+		
 		nodeNode = openList.get()
 		closedList.add(nodeNode)
 
@@ -138,48 +145,44 @@ def DFS(initialState, goalTest):
 				openList.put(state)
 				closedList.add(state.map)
 
-		# 		if state.depth > max_search_depth:
-		# 			max_search_depth += 1 #iterative deepening
+			if state.depth > max_search_depth:
+				max_search_depth += 1
 
-		# if len(openList) > max_stack_size:
-		# 	max_stack_size += 1
 
-def export(frontier, time):
+def export(frontier, elapsedTime):
 
-    #global moves
-
-    moves = stepBack(startState,goal_node)
+    tileMoves = stepBack(startState,goal_node)
 
     file = open('output.txt', 'w')
-    file.write("path_to_goal: " + str(moves))
-    file.write("\ncost_of_path: " + str(len(moves)))
+    file.write("path_to_goal: " + str(tileMoves))
+    file.write("\ncost_of_path: " + str(len(tileMoves)))
     file.write("\nnum_nodes_expanded: " + str(num_nodes_expanded))
-    #file.write("\nfringe_size: " + str(len(frontier)))
-    #file.write("\nmax_fringe_size: " + str(max_frontier_size))
     file.write("\nsearch_depth: " + str(goal_node.depth))
-    #file.write("\nmax_search_depth: " + str(max_search_depth))
-    file.write("\nrunning_time: " + format(time, '.8f'))
-    #file.write("\nmax_ram_usage: " + format(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1000.0, '.8f'))    
+    file.write("\nrunning_time: " + format(elapsedTime, '.8f'))    
     file.close()
 
 def main():
     global puzzleSize, puzzle_side_len
-    global startState 
-    startState = [1,2,0,3,4,5,6,7,8]
+    global startState
+    global start_time
+    global time_acceptable 
+  
+    startState = [3,1,2,4,5,0,6,7,8]
     goalState = [0,1,2,3,4,5,6,7,8]
     puzzleSize = len(startState)
     puzzle_side_len = int(puzzleSize ** 0.5)
-    res = DFS(startState, goalState)
-    
+    print("running dfs on puzzle :\n", matStacker(startState))
+    print("goal puzzle state is :\n", matStacker(goalState))
     start = timeit.default_timer()
-    #frontier = function(initial_state)
-    res = DFS(startState, goalState)
+    start_time = start
+ 
+    results = DFS(startState, goalState)
     stop = timeit.default_timer()
 
-    #export(res, stop-start)
-    print("result of DFS: ")
-    if res:
-    	export(res, stop-start)
+    print("********    Result of DFS    ********* ")
+    print("time elapsed was: \n", stop-start)
+    if results:
+    	export(results, stop-start)
     	unstacked = goal_node.stateMat
     	stacked = matStacker(unstacked)
     	print("goal state found : \n", stacked)
