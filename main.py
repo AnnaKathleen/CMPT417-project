@@ -1,29 +1,34 @@
 # import numpy as np
 import timeit
+from node import reshapePuzzle
 import argparse
 from BFS import BFS
-from DFS import DFS
+# from DFS import DFS
+# from AST import AST
+import random
 
 # map sizes:
 board_map = {
     # '8Puzzle' : np.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]]),
     # '15Puzzle' : np.array([[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]])
-    '8Puzzle' : [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    '8Puzzle' : [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    '15Puzzle' : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 }
 
 # functions:
+input()
 function_map = {
-    'bfs': BFS,
-    'dfs': DFS,
-    'ast': AST
+    'bfs': BFS
+    # 'dfs': DFS,
+    # 'ast': AST
 }
 
 # Randomize the puzzle to get the starting state of the problem
-def getStartState():
-    startState = goalState.ravel()
-    np.random.shuffle(startState)
-    n = np.shape(goalState)
-    return startState.reshape(n[0],n[0])
+# def getStartState():
+#     startState = goalState.ravel()
+#     np.random.shuffle(startState)
+#     n = np.shape(goalState)
+#     return startState.reshape(n[0],n[0])
 
 # get the user to choose the algorithm to solve the puzzle
 # def chooseAlgorithm():
@@ -50,20 +55,20 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     function = function_map[args.algorithm]
+    # print("f: ", str(function))
     board = board_map[args.board]
-    
+    # print("b: ", board)
+    # input()
     goalState = board
+    startState = board
+    # # startState = getStartState()
+    # random.shuffle(startState)
+    # print("Start State: ")
+    # reshapePuzzle(startState)
+    # print("Goal State: \n")
+    # reshapePuzzle(goalState)
 
-    startState = getStartState()
-    print("Start State: \n", startState)
-    print("Goal State: \n", goalState, "\n")
+    # # function(startState, goalState)
 
-    startTime = timeit.default_timer()
-
-    function(startState, goalState)
-
-    stopTime = timeit.default_timer()
-    print("time to solve: ", stopTime - startTime)
-
-    # solver = chooseAlgorithm() # not needed anymore.    
-    # solve(solver, startState, goalState) # not needed anymore
+    # # solver = chooseAlgorithm() # not needed anymore.    
+    # # solve(solver, startState, goalState) # not needed anymore

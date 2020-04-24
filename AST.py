@@ -4,11 +4,12 @@ from math import floor
 from node import Node, reshapePuzzle
 from heapq import heappush, heappop, heapify
 import random
+import argparse
 
 num_nodes_expanded = 0
 puzzleSize = 0
 puzzle_side_len = 0
-time_constraint = 10 # seconds
+time_constraint = 15 # seconds
         
 def getSuccessors(currNode):
     global num_nodes_expanded
@@ -60,7 +61,6 @@ def getSuccessors(currNode):
     
     successors = [children for children in children if children.node]
     return successors
-
 
 def stepBack(startNode,node):
     currNode = node
@@ -142,27 +142,43 @@ def AST(startState, goalState):
 
 def main():
     global puzzleSize, puzzle_side_len
-    # startState = [0,8,7,6,5,4,3,2,1]
-    startState = [0,1,2,3,4,5,6,7,8]
-    goalState = [0,1,2,3,4,5,6,7,8]
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('board')
+    args = parser.parse_args()
+    board = board_map[args.board]
+
+    startState = board
+    if len(board) == 9:
+        goalState = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    else:
+        goalState = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
     puzzleSize = len(startState)
     puzzle_side_len = int(puzzleSize ** 0.5)
     
     random.shuffle(startState)
-    print(startState)
+    print("A randomized Starting state: ")
+    reshapePuzzle(startState)
+
     startTime = timeit.default_timer()
     results = AST(startState, goalState)
     stopTime = timeit.default_timer()
     
-    print("********    Result of BFS    ********* ")
-    #print("time elapsed was: \n", stop-start)
+    print("********    Result of AST    ********* ")
     if results:
         print("solution found! \n")
         print("path_to_goal: " + str(directions))
         print("\ncost_of_path: " + str(len(directions)))
     else:
-        print("no solution found :( ")	
+        print("no solution found, time limit exceeded")	
     print("\ntime taken: ", stopTime - startTime, " seconds")
+
+
+board_map = {
+    '8Puzzle' : [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    '15Puzzle' : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+}
+
 
 main()
