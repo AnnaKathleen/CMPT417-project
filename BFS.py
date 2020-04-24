@@ -5,40 +5,6 @@ num_nodes_expanded = 0
 puzzleSize = 0
 puzzle_side_len = 0
 
-        if index not in range(board_len - board_side, board_len):
-
-            temp = new_node[index + board_side]
-            new_node[index + board_side] = new_node[index]
-            new_node[index] = temp
-
-            return new_node
-        else:
-            return None
-
-    if position == 3:  # Left
-
-        if index not in range(0, board_len, board_side):
-
-            temp = new_node[index - 1]
-            new_node[index - 1] = new_node[index]
-            new_node[index] = temp
-
-            return new_node
-        else:
-            return None
-
-    if position == 4:  # Right
-
-        if index not in range(board_side - 1, board_len, board_side):
-
-            temp = new_node[index + 1]
-            new_node[index + 1] = new_node[index]
-            new_node[index] = temp
-
-            return new_node
-        else:
-            return None
-
 def BFS(startState, goalState):
     unvisitedNodes = deque([Node(startState, None, None, 0,0,0)])
     exploredNodes = set()

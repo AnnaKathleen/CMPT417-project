@@ -1,5 +1,6 @@
 from collections import deque
 from node import Node
+from heapq import heappush, heappop, heapify
 
 num_nodes_expanded = 0
 puzzleSize = 0
@@ -75,40 +76,30 @@ def stepBack(startNode,node):
     return directions
 
 def heuristic(currState, goalState):
-    # key corresponds to index of the elements in 1D currState array 
-    # value corresponds to position in an x,y grid
-    #   0 1 2 
-    # 0|-|-|-|
-    # 1|-|-|-|
-    # 2|-|-|-|
-    posDict = {
-        0: (0,0),
-        1: (1,0),
-        2: (2,0),
-        3: (1,0),
-        4: (1,1),
-        5: (1,2),
-        6: (2,0),
-        7: (2,1),
-        8: (2,2)
-    }
     # heuristic is calculated by: in a plane with p1 at (x1, y1) and p2 at (x2, y2), it is |x1 - x2| + |y1 - y2|.
-    xy1 = posDict[currState[2]]
-    print(xy1)
-    x1 = xy1[0]
-    y1 = xy1[1]
-    xy2 = posDict[currState[4]]
-    x2 = xy2[0]
-    y2 = xy2[1]
-    print(xy2)
-    sum = abs(x1 - x2) + abs(y1 - y2)
-    print(sum)
+    sum = 0
+    for i in range(1, puzzleSize):
+        sum += abs(currState.index(i) % puzzle_side_len - goalState.index(i) % puzzle_side_len) + abs(currState.index(i)//puzzle_side_len - goalState.index(i)//puzzle_side_len)
+    # print(sum)
     return sum
 
 def ast(startState, goalState):
-    # root = Node(startState, None, None, 0, 0, key)
-    print(startState)
-    heuristic(startState, goalState)
+    visitedNodes = set()
+    priorityQueue = list() # heap implemented as a priority Queue
+    heapDict = {}
+
+    key = heuristic(startState, goalState)
+    root = Node(startState, None, None, 0, 0, key)
+
+    dictEntry = (key, 0, root) # holds the key, action and current node as a tuple
+    heappush(priorityQueue, dictEntry) # add the dictionary entry to the heap called priorityQueue
+    heapDict[root.map] = dictEntry
+
+    while priorityQueue:
+        currNode = heappop(priorityQueue)
+        print(currNode)
+        visitedNodes.add(currNode[2].map)
+
 
 
 
