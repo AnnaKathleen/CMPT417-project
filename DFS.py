@@ -24,7 +24,7 @@ class Node:
 		self.depth = depth
 
 		if self.stateMat:
-			self.map = ''.join(str(locs) for locs in self.stateMat)
+			self.ID = ''.join(str(locs) for locs in self.stateMat)
 
 goal_node = Node 
 
@@ -146,9 +146,9 @@ def DFS(initialState, goalTest, thisTime, iter):
 		possibleStates = reversed(getSuccessors(nodeNode))
 
 		for state in possibleStates:
-			if state.map not in closedList:
+			if state.ID not in closedList:
 				openList.put(state)
-				closedList.add(state.map)
+				closedList.add(state.ID)
 
 			if state.depth > max_search_depth:
 				max_search_depth += 1

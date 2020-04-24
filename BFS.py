@@ -11,7 +11,7 @@ def BFS(startState, goalState):
 
     while unvisitedNodes:
         currNode = unvisitedNodes.popleft()
-        exploredNodes.add(currNode.map)
+        exploredNodes.add(currNode.ID)
         if currNode.node == goalState:
             directions = stepBack(startState,currNode)
             print("path_to_goal: " + str(directions))
@@ -21,9 +21,9 @@ def BFS(startState, goalState):
         successors = getSuccessors(currNode)
 
         for nextNode in successors:
-            if nextNode.map not in exploredNodes:
+            if nextNode.ID not in exploredNodes:
                 unvisitedNodes.append(nextNode)
-                exploredNodes.add(nextNode.map)
+                exploredNodes.add(nextNode.ID)
         
 def getSuccessors(currNode):
     global num_nodes_expanded
