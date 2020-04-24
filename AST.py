@@ -6,7 +6,7 @@ puzzleSize = 0
 puzzle_side_len = 0
 
 
-def BFS(startState, goalState):
+def ast(startState, goalState):
     unvisitedNodes = deque([Node(startState, None, None, 0)])
     exploredNodes = set()
 
@@ -103,6 +103,6 @@ def main():
     goalState = [0,1,2,3,4,5,6,7,8]
     puzzleSize = len(startState)
     puzzle_side_len = int(puzzleSize ** 0.5)
-    bfs(startState, goalState)
+    ast(startState, goalState)
 
 main()
