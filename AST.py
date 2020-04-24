@@ -4,60 +4,6 @@ from node import Node
 num_nodes_expanded = 0
 puzzleSize = 0
 puzzle_side_len = 0
-
-        if index not in range(board_len - board_side, board_len):
-
-            temp = new_node[index + board_side]
-            new_node[index + board_side] = new_node[index]
-            new_node[index] = temp
-
-            return new_node
-        else:
-            return None
-
-    if position == 3:  # Left
-
-        if index not in range(0, board_len, board_side):
-
-            temp = new_node[index - 1]
-            new_node[index - 1] = new_node[index]
-            new_node[index] = temp
-
-            return new_node
-        else:
-            return None
-
-    if position == 4:  # Right
-
-        if index not in range(board_side - 1, board_len, board_side):
-
-            temp = new_node[index + 1]
-            new_node[index + 1] = new_node[index]
-            new_node[index] = temp
-
-            return new_node
-        else:
-            return None
-
-def BFS(startState, goalState):
-    unvisitedNodes = deque([Node(startState, None, None, 0,0,0)])
-    exploredNodes = set()
-
-    while unvisitedNodes:
-        currNode = unvisitedNodes.popleft()
-        exploredNodes.add(currNode.map)
-        if currNode.node == goalState:
-            directions = stepBack(startState,currNode)
-            print("path_to_goal: " + str(directions))
-            print("cost_of_path: " + str(len(directions)))
-            return None
-        
-        successors = getSuccessors(currNode)
-
-        for nextNode in successors:
-            if nextNode.map not in exploredNodes:
-                unvisitedNodes.append(nextNode)
-                exploredNodes.add(nextNode.map)
         
 def getSuccessors(currNode):
     global num_nodes_expanded
@@ -103,13 +49,11 @@ def getSuccessors(currNode):
                 noneTrue = True
                 finalPosition = None
         if noneTrue == True:
-            children.append(Node(finalPosition,currNode,i,0,0,0))
+            children.append(Node(finalPosition,currNode,i,0,currNode.cost + 1))
         else:
-            children.append(Node(newPosition,currNode,i,0,0,0))
-            # print(children)
+            children.append(Node(newPosition,currNode,i,0, currNode.cost + 1))
     
     successors = [children for children in children if children.node]
-    # print(successors)
     return successors
 
 
@@ -130,12 +74,50 @@ def stepBack(startNode,node):
         currNode = currNode.parent
     return directions
 
+def heuristic(currState, goalState):
+    # key corresponds to index of the elements in 1D currState array 
+    # value corresponds to position in an x,y grid
+    #   0 1 2 
+    # 0|-|-|-|
+    # 1|-|-|-|
+    # 2|-|-|-|
+    posDict = {
+        0: (0,0),
+        1: (1,0),
+        2: (2,0),
+        3: (1,0),
+        4: (1,1),
+        5: (1,2),
+        6: (2,0),
+        7: (2,1),
+        8: (2,2)
+    }
+    # heuristic is calculated by: in a plane with p1 at (x1, y1) and p2 at (x2, y2), it is |x1 - x2| + |y1 - y2|.
+    xy1 = posDict[currState[2]]
+    print(xy1)
+    x1 = xy1[0]
+    y1 = xy1[1]
+    xy2 = posDict[currState[4]]
+    x2 = xy2[0]
+    y2 = xy2[1]
+    print(xy2)
+    sum = abs(x1 - x2) + abs(y1 - y2)
+    print(sum)
+    return sum
+
+def ast(startState, goalState):
+    # root = Node(startState, None, None, 0, 0, key)
+    print(startState)
+    heuristic(startState, goalState)
+
+
+
 def main():
     global puzzleSize, puzzle_side_len
     startState = [0,8,7,6,5,4,3,2,1]
     goalState = [0,1,2,3,4,5,6,7,8]
     puzzleSize = len(startState)
     puzzle_side_len = int(puzzleSize ** 0.5)
-    BFS(startState, goalState)
+    ast(startState, goalState)
 
 main()

@@ -13,7 +13,8 @@ board_map = {
 # functions:
 function_map = {
     'bfs': BFS,
-    'dfs': DFS
+    'dfs': DFS,
+    'ast': AST
 }
 
 # Randomize the puzzle to get the starting state of the problem
