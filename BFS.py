@@ -1,5 +1,5 @@
 from collections import deque
-from Node import Node
+from node import Node
 
 num_nodes_expanded = 0
 puzzleSize = 0

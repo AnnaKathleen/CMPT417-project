@@ -1,30 +1,9 @@
 from collections import deque
-from Node import Node
+from node import Node
 
 num_nodes_expanded = 0
 puzzleSize = 0
 puzzle_side_len = 0
-
-
-def ast(startState, goalState):
-    unvisitedNodes = deque([Node(startState, None, None, 0)])
-    exploredNodes = set()
-
-    while unvisitedNodes:
-        currNode = unvisitedNodes.popleft()
-        exploredNodes.add(currNode.map)
-        if currNode.node == goalState:
-            directions = stepBack(startState,currNode)
-            print("path_to_goal: " + str(directions))
-            print("cost_of_path: " + str(len(directions)))
-            return None
-        
-        successors = getSuccessors(currNode)
-
-        for nextNode in successors:
-            if nextNode.map not in exploredNodes:
-                unvisitedNodes.append(nextNode)
-                exploredNodes.add(nextNode.map)
         
 def getSuccessors(currNode):
     global num_nodes_expanded
@@ -96,6 +75,14 @@ def stepBack(startNode,node):
         directions.append(currAction)
         currNode = currNode.parent
     return directions
+
+def heuristic(currState, goalState):
+    return sum(abs(b % puzzle_side_len - g % puzzle_side_len) + abs(b//puzzle_side_len - g//puzzle_side_len)
+               for b, g in ((currState.index(i), goalState.index(i)) for i in range(1, puzzleSize)))
+
+def ast(startState, goalState):
+    pass
+
 
 def main():
     global puzzleSize, puzzle_side_len
