@@ -10,17 +10,13 @@ def bfs(startState, goalState):
     unvisitedNodes = deque([Node(startState, None, None, 0)])
     exploredNodes = set()
 
-    print(startState)
-    print(len(unvisitedNodes))
-    print(unvisitedNodes)
-
     while unvisitedNodes:
         currNode = unvisitedNodes.popleft()
         exploredNodes.add(currNode.map)
-        
         if currNode.node == goalState:
-            directions = stepBack(startState,currNode.node)
+            directions = stepBack(startState,currNode)
             print("path_to_goal: " + str(directions))
+            print("cost_of_path: " + str(len(directions)))
             return None
         
         successors = getSuccessors(currNode)
@@ -34,30 +30,27 @@ def getSuccessors(currNode):
     global num_nodes_expanded
     num_nodes_expanded += 1
     children = list()
-    newPosition = currNode.node[:]
-    index = newPosition.index(0)
-    print(type(newPosition))
-    print("new state: ", newPosition)
     for i in range(1,5):
+        newPosition = currNode.node[:]
+        index = newPosition.index(0)
+        noneTrue = False
         if i == 1: # move the 0 up
             if index not in range(0, puzzle_side_len):
                 tempState = newPosition[index - puzzle_side_len]
                 newPosition[index - puzzle_side_len] = newPosition[index]
                 newPosition[index] = tempState
             else:
-                newPosition = None
+                noneTrue = True
+                finalPosition = None
 
         elif i == 2: # move the 0 down
             if index not in range(puzzleSize - puzzle_side_len, puzzleSize):
-                print(type(index))
-                print(index)
-                print(type(puzzle_side_len))
-                print(puzzle_side_len)
                 tempState = newPosition[index + puzzle_side_len]
                 newPosition[index + puzzle_side_len] = newPosition[index]
                 newPosition[index] = tempState
             else:
-                newPosition = None
+                noneTrue = True
+                finalPosition = None
         
         elif i == 3: # move the 0 left
             if index not in range(0, puzzleSize ,puzzle_side_len):
@@ -65,24 +58,30 @@ def getSuccessors(currNode):
                 newPosition[index - 1] = newPosition[index]
                 newPosition[index] = tempState
             else:
-                newPosition = None
+                noneTrue = True
+                finalPosition = None
 
         elif i == 4: # move the 0 right
-            if index not in range(puzzle_side_len - 1, puzzleSize, puzzleSize):
+            if index not in range(puzzle_side_len - 1, puzzleSize, puzzle_side_len):
                 tempState = newPosition[index + 1]
                 newPosition[index + 1] = newPosition[index]
                 newPosition[index] = tempState
             else:
-                newPosition = None
-        
-        children.append(Node(newPosition,currNode,i,0))
+                noneTrue = True
+                finalPosition = None
+        if noneTrue == True:
+            children.append(Node(finalPosition,currNode,i,0))
+        else:
+            children.append(Node(newPosition,currNode,i,0))
+            # print(children)
     
     successors = [children for children in children if children.node]
+    # print(successors)
     return successors
 
 
 def stepBack(startNode,node):
-    currNode = Node
+    currNode = node
     directions = list()
     while  currNode.node != startNode:
         if currNode.action == 1:
