@@ -4,9 +4,9 @@ import numpy as np
 import timeit
 import random
 import io
+import matplotlib.pyplot as plt 
 
 global num_nodes_expanded
-#num_nodes_expanded = 0
 max_search_depth = 0
 puzzleSize = 0
 puzzle_side_len = 0
@@ -49,8 +49,6 @@ def getSuccessors(currNode):
     children = list()
     for i in range(1,5):
         newPosition = currNode.stateMat[:]
-        #nindex = findBlank(newPosition)
-        #print("newPosition is ", newPosition)
         index = newPosition.index(0)
         noneTrue = False
         if i == 1: # move the 0 up
@@ -92,10 +90,8 @@ def getSuccessors(currNode):
             children.append(Node(finalPosition,currNode,i,0,0,currNode.cost,currNode.depth))
         else:
             children.append(Node(newPosition,currNode,i,0,0,currNode.cost+1,currNode.depth+1))
-            # print(children)
     
     successors = [children for children in children if children.stateMat]
-    # print(successors)
     return successors
 
 
@@ -133,13 +129,11 @@ def DFS(initialState, goalTest, thisTime, iter):
 		currTime = timeit.default_timer()
 		if (currTime-thisTime) >= time_constraint:
 			#time_acceptable = False
-			#break
 			return 0	
 		
 		nodeNode = openList.get()
 		closedList.add(nodeNode)
 		
-
 		if nodeNode.stateMat == goalTest:
 			goal_node.put(nodeNode)
 			return openList
@@ -163,26 +157,34 @@ def export(initialstate, goalnode, elapsedTime, namefile):
     eopenlist = initialstate
     i = namefile
     tileMoves = stepBack(eopenlist,egoalnode)
-    file = open("eightpdfs_{0}.txt".format(i), 'w')
+    #file = open("eightpdfs_{0}.txt".format(i), 'w')
     #file = open("namefile.txt", 'w')
-    file.write("path_to_goal: " + str(tileMoves))
+    #file.write("path_to_goal: " + str(tileMoves))
     #file.write("\ncost_of_path: " + str(len(tileMoves)))
     #file.write("\nnum_nodes_expanded: " + str(num_nodes_expanded))
-    file.write("\n" + str(num_nodes_expanded))
-    file.write("\n" + str(egoalnode.depth))
-    file.write("\n" + format(elapsedTime, '.8f'))
+    #file.write("\n" + str(num_nodes_expanded))
+    #file.write("\n" + str(egoalnode.depth))
+    #file.write("\n" + format(elapsedTime, '.8f'))
     #file.write("\nsearch_depth: " + str(goal_node.depth))
     #file.write("\nrunning_time: " + format(elapsedTime, '.8f'))    
-    file.close()
+    #file.close()
+    x_vals.append(num_nodes_expanded)
+    y_vals.append(elapsedTime)
+
 
 def main():
 	global puzzleSize, puzzle_side_len
 	global startState, goalState, goal_node, num_nodes_expanded
 	global start_time
 	global time_acceptable 
+	global x_vals, y_vals
 	start = []
 	stop = []
 	results = []
+	x_vals = []
+	y_vals = []
+	x_vals_fails = []
+	y_vals_fails = []
 
 	startState = [3,1,2,0,4,5,6,7,8]
 	goalState = [0,1,2,3,4,5,6,7,8]
@@ -191,7 +193,7 @@ def main():
 
 	puzzleSize = len(startState)
 	puzzle_side_len = int(puzzleSize ** 0.5)
-	for each in range(0,4):
+	for each in range(0,10):
 		randStart.append(random.sample(startState,puzzleSize))
 		print("running dfs on puzzle :\n", matStacker(randStart[each]))
 		print("goal puzzle state is :\n", matStacker(goalState))
@@ -201,13 +203,24 @@ def main():
 		stop.append(timeit.default_timer())
 
 		print("********    Result of DFS    ********* ")
-		print("nodes expanded were: \n", num_nodes_expanded)
+		print("num nodes expanded were: \n", num_nodes_expanded)
 		#print("time elapsed was: \n", stop-start)
 		if results:
 			export(randStart[each], goal_node, stop[each]-start[each], each)
 			#export(startState,goal_node,stop[each]-start[each],each)
 			print("solution found ! \n")
 		else:
-			print("no solution found :( ")	
+			print("no solution found :( ")
+			x_vals_fails.append(num_nodes_expanded)
+			y_vals_fails.append(stop[each]-start[each])	
 
+	fig, ax = plt.subplots()
+	plt.title("Results of DFS on 10 random instances of 8 puzzle")
+	plt.ylabel("nodes expanded")
+	plt.xlabel("time elapsed")
+	ax.plot(y_vals,x_vals,'bo',label='sucessful search')
+	ax.plot(y_vals_fails,x_vals_fails,'ro',label='failed search')
+	legend = ax.legend(loc='lower right')
+	#plt.show()
+	plt.savefig('plot')
 main()
