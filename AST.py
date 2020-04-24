@@ -1,11 +1,14 @@
 from collections import deque
+import timeit
 from math import floor
 from node import Node, reshapePuzzle
 from heapq import heappush, heappop, heapify
+import random
 
 num_nodes_expanded = 0
 puzzleSize = 0
 puzzle_side_len = 0
+time_constraint = 10 # seconds
         
 def getSuccessors(currNode):
     global num_nodes_expanded
@@ -89,7 +92,8 @@ def heuristic(currState, goalState):
         sum += abs(currState.index(i) % puzzle_side_len - goalState.index(i) % puzzle_side_len) + abs(floor(currState.index(i)/puzzle_side_len) - floor(goalState.index(i)/puzzle_side_len))
     return sum
 
-def ast(startState, goalState):
+def AST(startState, goalState):
+    global directions
     visitedNodes = set()
     priorityQueue = list() # heap implemented as a priority Queue
     heapify(priorityQueue)
@@ -106,11 +110,14 @@ def ast(startState, goalState):
         currNode = heappop(priorityQueue)
         visitedNodes.add(currNode[2].ID) # get the ID of the node from the node which is in index pos 2 of the dictEntry tuple
         
+        if timeit.default_timer() >= time_constraint:
+            return 0
+
         if currNode[2].node == goalState: # check if we have reached the goal node 
             directions = stepBack(startState,currNode[2]) # trace back steps to get directions on how to get from start state to the goal state
-            print("path_to_goal: " + str(directions))
-            print("cost_of_path: " + str(len(directions)))
-            return None
+            # print("path_to_goal: " + str(directions))
+            # print("cost_of_path: " + str(len(directions)))
+            return priorityQueue
         
         successors = getSuccessors(currNode[2])
 
@@ -135,10 +142,27 @@ def ast(startState, goalState):
 
 def main():
     global puzzleSize, puzzle_side_len
-    startState = [0,8,7,6,5,4,3,2,1]
+    # startState = [0,8,7,6,5,4,3,2,1]
+    startState = [0,1,2,3,4,5,6,7,8]
     goalState = [0,1,2,3,4,5,6,7,8]
+
     puzzleSize = len(startState)
     puzzle_side_len = int(puzzleSize ** 0.5)
-    ast(startState, goalState)
+    
+    random.shuffle(startState)
+    print(startState)
+    startTime = timeit.default_timer()
+    results = AST(startState, goalState)
+    stopTime = timeit.default_timer()
+    
+    print("********    Result of BFS    ********* ")
+    #print("time elapsed was: \n", stop-start)
+    if results:
+        print("solution found! \n")
+        print("path_to_goal: " + str(directions))
+        print("\ncost_of_path: " + str(len(directions)))
+    else:
+        print("no solution found :( ")	
+    print("\ntime taken: ", stopTime - startTime, " seconds")
 
 main()

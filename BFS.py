@@ -1,22 +1,28 @@
 from collections import deque
 from node import Node
+import timeit
+import random
 
 num_nodes_expanded = 0
 puzzleSize = 0
 puzzle_side_len = 0
+time_constraint = 10 # seconds
 
 def BFS(startState, goalState):
+    global directions
     unvisitedNodes = deque([Node(startState, None, None, 0,0,0)])
     exploredNodes = set()
 
     while unvisitedNodes:
         currNode = unvisitedNodes.popleft()
         exploredNodes.add(currNode.ID)
+        
+        if timeit.default_timer() >= time_constraint:
+            return 0
+
         if currNode.node == goalState:
             directions = stepBack(startState,currNode)
-            print("path_to_goal: " + str(directions))
-            print("cost_of_path: " + str(len(directions)))
-            return None
+            return unvisitedNodes
         
         successors = getSuccessors(currNode)
 
@@ -98,10 +104,27 @@ def stepBack(startNode,node):
 
 def main():
     global puzzleSize, puzzle_side_len
-    startState = [0,8,7,6,5,4,3,2,1]
+    # startState = [0,8,7,6,5,4,3,2,1]
+    startState = [0,1,2,3,4,5,6,7,8]
     goalState = [0,1,2,3,4,5,6,7,8]
+
     puzzleSize = len(startState)
     puzzle_side_len = int(puzzleSize ** 0.5)
-    BFS(startState, goalState)
+    
+    random.shuffle(startState)
+    print(startState)
+    startTime = timeit.default_timer()
+    results = BFS(startState, goalState)
+    stopTime = timeit.default_timer()
+    
+    print("********    Result of BFS    ********* ")
+    #print("time elapsed was: \n", stop-start)
+    if results:
+        print("solution found! \n")
+        print("path_to_goal: " + str(directions))
+        print("\ncost_of_path: " + str(len(directions)))
+    else:
+        print("no solution found :( ")	
+    print("\ntime taken: ", stopTime - startTime, " seconds")
 
 main()
