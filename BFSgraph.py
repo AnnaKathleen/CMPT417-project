@@ -9,8 +9,6 @@ num_nodes_expanded = 0
 puzzleSize = 0
 puzzle_side_len = 0
 time_constraint = 60 # seconds
-#testset = []
-#testset.append([5, 1, 7, 0, 8, 3, 6, 4, 2])
 eighttestset = [[5, 1, 7, 0, 8, 3, 6, 4, 2],[8, 7, 2, 3, 6, 1, 0, 5, 4],[4, 1, 7, 2, 0, 8, 5, 6, 3],[8, 5, 7, 6, 0, 4, 3, 2, 1],[2, 4, 7, 1, 6, 3, 5, 8, 0],[5, 1, 3, 6, 8, 7, 4, 0, 2],[6, 0, 4, 1, 5, 3, 7, 2, 8],[3, 6, 1, 2, 8, 4, 7, 5, 0],[3, 8, 7, 5, 6, 0, 4, 2, 1],[7, 8, 6, 5, 4, 0, 2, 3, 1]]
 fifteentestset =  [[10, 2, 9, 0, 7, 6, 11, 12, 5, 13, 8, 14, 3, 4, 1], [5, 9, 0, 12, 14, 7, 6, 10, 11, 8, 1, 4, 2, 3, 13], [0, 6, 3, 11, 12, 7, 5, 4, 14, 2, 13, 10, 8, 1, 9], [6, 13, 2, 5, 9, 12, 8, 3, 1, 10, 14, 7, 0, 4, 11], [0, 3, 12, 8, 2, 4, 9, 11, 10, 13, 7, 14, 5, 1, 6], [5, 6, 14, 12, 2, 0, 3, 7, 8, 1, 10, 13, 11, 4, 9], [10, 3, 14, 13, 4, 1, 11, 6, 5, 0, 7, 2, 12, 9, 8], [0, 1, 10, 13, 11, 8, 7, 2, 9, 5, 4, 6, 3, 14, 12], [14, 7, 2, 3, 13, 9, 11, 8, 4, 5, 1, 10, 12, 0, 6], [1, 6, 0, 5, 7, 3, 14, 10, 11, 12, 13, 2, 9, 8, 4]]
 
@@ -110,23 +108,20 @@ def stepBack(startNode,node):
         currNode = currNode.parent
     return directions
 
-def export(initialstate, goalnode, elapsedTime, namefile):
+def outputUtil(initialstate, goalnode, elapsedTime, namefile):
 
-    #global tileMoves
-    #egoalnode = goalnode.get()
-    #eopenlist = initialstate
-    #i = namefile
-    #tileMoves = stepBack(eopenlist,egoalnode)
+    global tileMoves
+    egoalnode = goalnode.get()
+    eopenlist = initialstate
+    i = namefile
+    tileMoves = stepBack(eopenlist,egoalnode)
+  # optional utils to write output to files numbered by each instance where successful
     #file = open("eightpdfs_{0}.txt".format(i), 'w')
-    #file = open("namefile.txt", 'w')
-    #file.write("path_to_goal: " + str(tileMoves))
-    #file.write("\ncost_of_path: " + str(len(tileMoves)))
-    #file.write("\nnum_nodes_expanded: " + str(num_nodes_expanded))
-    #file.write("\n" + str(num_nodes_expanded))
-    #file.write("\n" + str(egoalnode.depth))
-    #file.write("\n" + format(elapsedTime, '.8f'))
-    #file.write("\nsearch_depth: " + str(goal_node.depth))
-    #file.write("\nrunning_time: " + format(elapsedTime, '.8f'))    
+    #file.write("Tile moves (path to goal): " + str(tileMoves))
+    #file.write("\npast cost: " + str(len(tileMoves)))
+    #file.write("\nnumber of nodes expanded: " + str(num_nodes_expanded))
+    #file.write("\ndepth of search: " + str(egoalnode.depth))
+    #file.write("\nrun time of search: " + format(elapsedTime, '.8f'))    
     #file.close()
     x_vals.append(num_nodes_expanded)
     y_vals.append(elapsedTime)
@@ -184,7 +179,6 @@ def main():
     legend = ax.legend(loc='lower right')
     #plt.show()
     plt.savefig('bfsplot')
-
 
 board_map = {
     '8Puzzle' : [0, 1, 2, 3, 4, 5, 6, 7, 8],
