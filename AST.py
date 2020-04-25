@@ -9,7 +9,7 @@ import argparse
 num_nodes_expanded = 0
 puzzleSize = 0
 puzzle_side_len = 0
-time_constraint = 3600 # seconds
+time_constraint = 60 # seconds
         
 def getSuccessors(currNode):
     global num_nodes_expanded
