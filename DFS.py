@@ -46,17 +46,8 @@ def matStacker(mat):
 		d = np.array(mat[12:16])
 		e = np.stack((a,b,c,d))
 		return e
-'''
-def findBlank(mat):
-	s = matStacker(mat)
-	for i in range(0,3):
-		for j in range(0,3):
-			if(s[i][j]==0):
-				return i,j
-'''
+
 def getSuccessors(currNode):
-    #global num_nodes_expanded
-    #num_nodes_expanded += 1
     children = list()
     for i in range(1,5):
         newPosition = currNode.stateMat[:]
@@ -97,7 +88,7 @@ def getSuccessors(currNode):
             else:
                 noneTrue = True
                 finalPosition = None
-        if noneTrue == True: # I might have made mistake here creating new nodes, depth calc off
+        if noneTrue == True: 
             children.append(Node(finalPosition,currNode,i,currNode.cost,currNode.depth))
         else:
             children.append(Node(newPosition,currNode,i,currNode.cost+1,currNode.depth+1))
@@ -166,20 +157,18 @@ def export(initialstate, goalnode, elapsedTime, namefile):
     eopenlist = initialstate
     i = namefile
     tileMoves = stepBack(eopenlist,egoalnode)
+  # optional utils to write output to files numbered by each instance where successful
     #file = open("eightpdfs_{0}.txt".format(i), 'w')
-    #file = open("namefile.txt", 'w')
     #file.write("path_to_goal: " + str(tileMoves))
     #file.write("\ncost_of_path: " + str(len(tileMoves)))
     #file.write("\nnum_nodes_expanded: " + str(num_nodes_expanded))
-    #file.write("\n" + str(num_nodes_expanded))
-    #file.write("\n" + str(egoalnode.depth))
-    #file.write("\n" + format(elapsedTime, '.8f'))
-    #file.write("\nsearch_depth: " + str(goal_node.depth))
+    #file.write("\nsearch_depth: " + str(egoalnode.depth))
     #file.write("\nrunning_time: " + format(elapsedTime, '.8f'))    
     #file.close()
     x_vals.append(num_nodes_expanded)
     y_vals.append(elapsedTime)
 
+# function to generate nested array of 10 random initial states 
 def genPuzzles(goaltemp):
 	temp = goaltemp
 	puzzleSize = len(goalState)
@@ -206,8 +195,6 @@ def main():
 	x_vals_fails = []
 	y_vals_fails = []
 
-
-
 	parser = argparse.ArgumentParser()
 	parser.add_argument('board')
 	args = parser.parse_args()
@@ -230,7 +217,7 @@ def main():
 	puzzleSize = len(goalState)
 	puzzle_side_len = int(puzzleSize ** 0.5)
 	for each in range(0,len(puzzle_instances)):
-		#randStart.append(random.sample(startState,puzzleSize))
+
 		print("running dfs on puzzle :\n", puzzle_instances[each])
 		#print("goal puzzle state is :\n", matStacker(goalState))
 		start.append(timeit.default_timer())
@@ -247,9 +234,11 @@ def main():
 			print("solution found ! \n")
 		else:
 			print("no solution found :( ")
+			# to store and plot instances that failed to find solution
 			x_vals_fails.append(num_nodes_expanded)
-			y_vals_fails.append(stop[each]-start[each])	
-
+			y_vals_fails.append(stop[each]-start[each])
+			
+	# using matplotlib to visualize data for all 10 initial state
 	fig, ax = plt.subplots()
 	plt.title("Results of DFS on 10 test instances of 8 puzzle")
 	plt.ylabel("nodes expanded")
