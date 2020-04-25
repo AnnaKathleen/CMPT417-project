@@ -56,6 +56,8 @@ def getSuccessors(currNode):
 
         elif i == 2: # move the 0 down
             if index not in range(puzzleSize - puzzle_side_len, puzzleSize):
+                print(index + puzzle_side_len)
+                print(len(newPosition))
                 tempState = newPosition[index + puzzle_side_len]
                 newPosition[index + puzzle_side_len] = newPosition[index]
                 newPosition[index] = tempState
@@ -130,58 +132,58 @@ def export(initialstate, goalnode, elapsedTime, namefile):
     y_vals.append(elapsedTime)
 
 def main():
-	global puzzleSize, puzzle_side_len, time_constraint, x_vals, y_vals
-	x_vals = []
-	y_vals = []
-	x_vals_fails = []
-	y_vals_fails = []
+    global puzzleSize, puzzle_side_len, time_constraint, x_vals, y_vals
+    x_vals = []
+    y_vals = []
+    x_vals_fails = []
+    y_vals_fails = []
 
-	parser = argparse.ArgumentParser()
-	parser.add_argument('board')
-	args = parser.parse_args()
-	board = board_map[args.board]
+    parser = argparse.ArgumentParser()
+    parser.add_argument('board')
+    args = parser.parse_args()
+    board = board_map[args.board]
 
-	startState = board
-	if len(board) == 9:
-		goalState = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-		testset = eighttestset
-	else:
-		goalState = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-		testset = fifteentestset
+    startState = board
+    if len(board) == 9:
+        goalState = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        testset = eighttestset
+    else:
+        goalState = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        testset = fifteentestset
 
-	puzzleSize = len(startState)
-	puzzle_side_len = int(puzzleSize ** 0.5)
-	puzzle_instances = testset
+    puzzleSize = len(startState)
+    puzzle_side_len = int(puzzleSize ** 0.5)
+    puzzle_instances = testset
 	#random.shuffle(startState)
 	#print("A randomized Starting state: ")
-	for each in range(0,len(puzzle_instances)):
-		startState = testset[each]
-		reshapePuzzle(startState)
-		print("running bfs on puzzle: \n", startState)
-		startTime = timeit.default_timer()
-		results = BFS(startState, goalState)
-		stopTime = timeit.default_timer()
+    for each in range(0,len(puzzle_instances)):
+        startState = testset[each]
+        # reshapePuzzle(startState)
+        print("running bfs on puzzle: \n", startState)
+        startTime = timeit.default_timer()
+        results = BFS(startState, goalState)
+        stopTime = timeit.default_timer()
 
-		print("********    Result of BFS    ********* ")
-		if results:
-			print("solution found! \n")
-			print("path_to_goal: " + str(directions))
-			print("\ncost_of_path: " + str(len(directions)))
-			export(puzzle_instances[each], results.pop(), stopTime-startTime, each)
-		else:
-			print("no solution found, time limit exceeded")
-			x_vals_fails.append(num_nodes_expanded)
-			y_vals_fails.append(stopTime-startTime)		
-	#print("\ntime taken: ", stopTime - startTime, " seconds")
-	fig, ax = plt.subplots()
-	plt.title("Results of BFS on 10 test instances of 8 puzzle")
-	plt.ylabel("nodes expanded")
-	plt.xlabel("time elapsed")
-	ax.plot(y_vals,x_vals,'bo',label='sucessful search')
-	ax.plot(y_vals_fails,x_vals_fails,'ro',label='failed search')
-	legend = ax.legend(loc='lower right')
-	#plt.show()
-	plt.savefig('bfsplot')
+        print("********    Result of BFS    ********* ")
+        if results:
+            print("solution found! \n")
+            print("path_to_goal: " + str(directions))
+            print("\ncost_of_path: " + str(len(directions)))
+            export(puzzle_instances[each], results.pop(), stopTime-startTime, each)
+        else:
+            print("no solution found, time limit exceeded")
+            x_vals_fails.append(num_nodes_expanded)
+            y_vals_fails.append(stopTime-startTime)		
+    #print("\ntime taken: ", stopTime - startTime, " seconds")
+    fig, ax = plt.subplots()
+    plt.title("Results of BFS on 10 test instances of 8 puzzle")
+    plt.ylabel("nodes expanded")
+    plt.xlabel("time elapsed")
+    ax.plot(y_vals,x_vals,'bo',label='sucessful search')
+    ax.plot(y_vals_fails,x_vals_fails,'ro',label='failed search')
+    legend = ax.legend(loc='lower right')
+    #plt.show()
+    plt.savefig('bfsplot')
 
 
 board_map = {

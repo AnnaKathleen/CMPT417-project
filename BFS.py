@@ -122,7 +122,7 @@ def main():
     
     random.shuffle(startState)
     print("A randomized Starting state: ")
-    reshapePuzzle(startState)
+    print(startState)
 
     startTime = timeit.default_timer()
     results = BFS(startState, goalState)
