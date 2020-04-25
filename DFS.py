@@ -229,8 +229,7 @@ def main():
 		print("num nodes expanded were: \n", num_nodes_expanded)
 		#print("time elapsed was: \n", stop-start)
 		if results:
-			export(puzzle_instances[each], goal_node, stop[each]-start[each], each)
-			#export(startState,goal_node,stop[each]-start[each],each)
+			outputUtil(puzzle_instances[each], goal_node, stop[each]-start[each], each)
 			print("solution found ! \n")
 		else:
 			print("no solution found :( ")
