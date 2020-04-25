@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 num_nodes_expanded = 0
 puzzleSize = 0
 puzzle_side_len = 0
-time_constraint = 15 # seconds
+time_constraint = 15000 # seconds
 #testset = []
 #testset.append([5, 1, 7, 0, 8, 3, 6, 4, 2])
 eighttestset = [[5, 1, 7, 0, 8, 3, 6, 4, 2],[8, 7, 2, 3, 6, 1, 0, 5, 4],[4, 1, 7, 2, 0, 8, 5, 6, 3],[8, 5, 7, 6, 0, 4, 3, 2, 1],[2, 4, 7, 1, 6, 3, 5, 8, 0],[5, 1, 3, 6, 8, 7, 4, 0, 2],[6, 0, 4, 1, 5, 3, 7, 2, 8],[3, 6, 1, 2, 8, 4, 7, 5, 0],[3, 8, 7, 5, 6, 0, 4, 2, 1],[7, 8, 6, 5, 4, 0, 2, 3, 1]]

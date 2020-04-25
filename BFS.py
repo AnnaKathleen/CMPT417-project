@@ -7,7 +7,7 @@ import random
 num_nodes_expanded = 0
 puzzleSize = 0
 puzzle_side_len = 0
-time_constraint = 15 # seconds
+time_constraint = 3600 # seconds
 
 def BFS(startState, goalState):
     global directions
