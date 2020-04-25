@@ -150,7 +150,7 @@ def DFS(initialState, goalTest, thisTime, iter):
 				max_search_depth += 1
 
 
-def export(initialstate, goalnode, elapsedTime, namefile):
+def outputUtil(initialstate, goalnode, elapsedTime, namefile):
 
     global tileMoves
     egoalnode = goalnode.get()
@@ -159,11 +159,11 @@ def export(initialstate, goalnode, elapsedTime, namefile):
     tileMoves = stepBack(eopenlist,egoalnode)
   # optional utils to write output to files numbered by each instance where successful
     #file = open("eightpdfs_{0}.txt".format(i), 'w')
-    #file.write("path_to_goal: " + str(tileMoves))
-    #file.write("\ncost_of_path: " + str(len(tileMoves)))
-    #file.write("\nnum_nodes_expanded: " + str(num_nodes_expanded))
-    #file.write("\nsearch_depth: " + str(egoalnode.depth))
-    #file.write("\nrunning_time: " + format(elapsedTime, '.8f'))    
+    #file.write("Tile moves (path to goal): " + str(tileMoves))
+    #file.write("\npast cost: " + str(len(tileMoves)))
+    #file.write("\nnumber of nodes expanded: " + str(num_nodes_expanded))
+    #file.write("\ndepth of search: " + str(egoalnode.depth))
+    #file.write("\nrun time of search: " + format(elapsedTime, '.8f'))    
     #file.close()
     x_vals.append(num_nodes_expanded)
     y_vals.append(elapsedTime)
