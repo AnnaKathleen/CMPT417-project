@@ -88,11 +88,9 @@ def heuristic(currState, goalState):
     # 1 |3|4|5|
     # 2 |6|7|8|
     sum = 0
-    # WEIGHTING FOR HEURISTIC
-    W = 2
     for i in range(1, puzzleSize):
         sum += abs(currState.index(i) % puzzle_side_len - goalState.index(i) % puzzle_side_len) + abs(floor(currState.index(i)/puzzle_side_len) - floor(goalState.index(i)/puzzle_side_len))
-    return W*sum
+    return sum
 
 def WAST(startState, goalState):
     global directions
@@ -100,8 +98,9 @@ def WAST(startState, goalState):
     priorityQueue = list() # heap implemented as a priority Queue
     heapify(priorityQueue)
     heapDict = {} # dictionary of all the heaps
-
-    heuristicValue = heuristic(startState, goalState)
+    # WEIGHTING FOR HEURISTIC
+    weight = 2
+    heuristicValue = weight * heuristic(startState, goalState)
     rootNode = Node(startState, None, None, 0, 0, heuristicValue)
 
     dictEntry = (heuristicValue, 0, rootNode) # holds the heuristicValue, action and current node as a tuple
@@ -126,7 +125,7 @@ def WAST(startState, goalState):
         successors = getSuccessors(currNode[2])
 
         for nextNode in successors:
-            nextNode.heuristicValue = nextNode.cost + (heuristic(nextNode.node, goalState))
+            nextNode.heuristicValue = nextNode.cost + (weight*heuristic(nextNode.node, goalState))
             dictEntry = (nextNode.heuristicValue, nextNode.action, nextNode)
 
             if nextNode.ID not in visitedNodes:
