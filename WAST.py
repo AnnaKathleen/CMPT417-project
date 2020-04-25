@@ -9,7 +9,7 @@ import argparse
 num_nodes_expanded = 0
 puzzleSize = 0
 puzzle_side_len = 0
-time_constraint = 3600 # seconds
+time_constraint = 60 # seconds
         
 def getSuccessors(currNode):
     global num_nodes_expanded
@@ -121,7 +121,7 @@ def WAST(startState, goalState):
             # print("path_to_goal: " + str(directions))
             # print("cost_of_path: " + str(len(directions)))
             return priorityQueue
-        
+
         successors = getSuccessors(currNode[2])
 
         for nextNode in successors:
@@ -162,6 +162,9 @@ def main():
     
     random.shuffle(startState)
     print("A randomized Starting state: ")
+    # guaranteed working startStates:
+    # startState = [5, 1, 0, 3, 7, 6, 4, 8, 2] 
+    # startState = [2, 1, 5, 6, 4, 8, 3, 7, 0]
     reshapePuzzle(startState)
 
     startTime = timeit.default_timer()
